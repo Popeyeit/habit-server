@@ -96,30 +96,30 @@ exports.registerUser = async (req, res, next) => {
 
 exports.loginUser = async (req, res, next) => {
   const { email, password } = req.body;
-  const user = await userModel.getUserByEmail(email);
-  if (!user) {
+  const userDB = await userModel.getUserByEmail(email);
+  if (!userDB) {
     return res.status(401).json('Email or password is wrong');
   }
-  const { verificationToken } = user;
+  const { verificationToken } = userDB;
   if (verificationToken) {
     return res.status(403).json('Your email is not verified');
   }
 
-  const isPasswordCorrect = await bcrypt.compare(password, user.password);
+  const isPasswordCorrect = await bcrypt.compare(password, userDB.password);
   if (!isPasswordCorrect) {
     return res.status(401).json('Email or password is wrong');
   }
   const token = await jwt.sign(
     {
-      uid: user._id,
+      uid: userDB._id,
     },
     process.env.JWT_SECRET,
   );
-  await userModel.updateUserToken(user._id, token);
-  const userObject = { email: user.email, nickName: user.nickName };
+  await userModel.updateUserToken(userDB._id, token);
+  const user = { email: userDB.email, nickName: userDB.nickName };
   res.status(200).json({
     token,
-    userObject,
+    user,
     // subscription: user.subscription
   });
 };
