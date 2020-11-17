@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
+const cors = require('cors');
 require('dotenv').config({
   path: path.join(__dirname, '../.env'),
 });
@@ -24,6 +25,8 @@ class CRUDServer {
   }
   initMiddlewares() {
     this.server.use(express.json());
+    this.server.use(cors());
+    this.server.use(express.static('public'));
   }
   async initDbConnection() {
     try {
