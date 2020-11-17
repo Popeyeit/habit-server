@@ -43,7 +43,7 @@ exports.authorize = async (req, res, next) => {
   }
 };
 const sendVerification = async (email, verificationToken) => {
-  const verificationLink = `${process.env.BASE_URL}/auth/verify/${verificationToken}`;
+  const verificationLink = `${process.env.BASE_URL}/api/users/verify/${verificationToken}`;
   try {
     const res = await sgMail.send(msg(email, verificationLink));
   } catch (error) {}
