@@ -5,9 +5,8 @@ const cors = require('cors');
 require('dotenv').config({
   path: path.join(__dirname, '../.env'),
 });
-
 const userRouter = require('./user/routers');
-
+const habitsRoute = require('./habits/routers');
 class CRUDServer {
   constructor() {
     this.server = null;
@@ -51,6 +50,7 @@ class CRUDServer {
   }
   initRoutes() {
     this.server.use('/api/users', userRouter);
+    this.server.use('/api/habits', habitsRoute);
   }
   startListening() {
     this.server.listen(process.env.PORT, () => {
