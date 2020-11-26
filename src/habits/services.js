@@ -5,7 +5,7 @@ const createObj = (dateStart, index) => {
   const date = moment(dateStart, momentFormat)
     .add(index, 'day')
     .format(momentFormat);
-  const obj = { date, isDone: 'nothing' };
+  const obj = { date, isDone: 'null' };
   return obj;
 };
 

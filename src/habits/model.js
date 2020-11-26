@@ -9,7 +9,7 @@ const dateSchema = new Schema({
   date: String,
   isDone: {
     type: String,
-    enum: ['yes', 'not', 'nothing'],
+    enum: ['true', 'false', 'null'],
     required: true,
   },
 });
