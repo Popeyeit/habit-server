@@ -29,7 +29,7 @@ exports.authorize = async (req, res, next) => {
     }
 
     const user = await userModel.findById(userId);
-    if (!user || token !== user.token) {
+    if (!user && token !== user.token) {
       res.status(401).json('Not authorized');
       return;
     }
