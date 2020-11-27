@@ -53,8 +53,8 @@ class CRUDServer {
     this.server.use('/api/habits', habitsRoute);
   }
   startListening() {
-    this.server.listen(process.env.PORT, () => {
-      console.log('start server on port -', process.env.PORT);
+    this.server.listen(process.env.PORT || 3459, () => {
+      console.log('start server on port -', process.env.PORT || 3459);
     });
   }
 }
