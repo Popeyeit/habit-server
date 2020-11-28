@@ -1,5 +1,5 @@
 const moment = require('moment');
-const momentFormat = 'dddd.DD.MMMM.YYYY';
+exports.momentFormat = 'dddd.DD.MMMM.YYYY';
 
 const createObj = (dateStart, index) => {
   const date = moment(dateStart, momentFormat)

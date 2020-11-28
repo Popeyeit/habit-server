@@ -3,6 +3,10 @@ const {
   Types: { ObjectId },
 } = require('mongoose');
 
+exports.rulesToGetHabits = Joi.object({
+  currentDate: Joi.string(),
+});
+
 exports.rulesCreateHabit = Joi.object({
   title: Joi.string().required().max(100),
   startDate: Joi.string().required(),

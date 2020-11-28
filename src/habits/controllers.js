@@ -1,9 +1,13 @@
+const moment = require('moment');
 const HabitModule = require('./model');
 const {
   setDateEveryDay,
   setDateTwoDays,
   setDateThreeDays,
 } = require('./services');
+const { momentFormat } = require('./services');
+
+const todayDate = moment().format(momentFormat);
 
 const createHabit = async (req, res, next) => {
   try {
@@ -34,13 +38,26 @@ const createHabit = async (req, res, next) => {
     next(error);
   }
 };
-//
+
 const getHabits = async (req, res, next) => {
   try {
     const { user } = req;
     const { _id } = user;
+    const { currentDate = todayDate } = req.body;
+
     const result = await HabitModule.find({ owner: _id });
-    res.status(200).json(result);
+
+    const filteredResult = result.reduce((newArray, el) => {
+      const hasDate = el.dates.find(el => el.date === currentDate);
+
+      if (hasDate) {
+        newArray.push({ title: el.title, _id: el._id, date: hasDate });
+      }
+
+      return newArray;
+    }, []);
+
+    res.status(200).json(filteredResult);
   } catch (error) {
     next(error);
   }
