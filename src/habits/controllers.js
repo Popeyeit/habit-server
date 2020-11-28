@@ -48,11 +48,21 @@ const getHabits = async (req, res, next) => {
     const result = await HabitModule.find({ owner: _id });
 
     const filteredResult = result.reduce((newArray, el) => {
-      const hasDate = el.dates.find(el => el.date === currentDate);
+      let totalHabitDone = 0;
+      const hasDate = el.dates.filter(el => {
+        el.isDone === 'true' ? (totalHabitDone += 2.5) : false;
+        return el.date === currentDate;
+      });
 
-      if (hasDate) {
-        newArray.push({ title: el.title, _id: el._id, date: hasDate });
+      if (hasDate.length > 0) {
+        newArray.push({
+          title: el.title,
+          _id: el._id,
+          date: hasDate,
+          totalHabitDone,
+        });
       }
+      totalHabitDone = 0;
 
       return newArray;
     }, []);
