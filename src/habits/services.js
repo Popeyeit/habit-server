@@ -13,7 +13,7 @@ const createObj = (dateStart, index) => {
 
 exports.setDateThreeDays = (
   dateStart,
-  arrDays = ['Monday', 'Friday', 'Wednesday'],
+  arrDays = ['Понедельник', 'Пятница', 'Среда'],
 ) => {
   const arrResult = [];
 
