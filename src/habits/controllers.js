@@ -2,10 +2,11 @@ const moment = require('moment');
 const HabitModule = require('./model');
 const {
   setDateEveryDay,
-  setDateTwoDays,
   setDateThreeDays,
+  setDateTwoDays,
 } = require('./services');
-const { momentFormat } = require('./services');
+
+const momentFormat = 'dddd.DD.MMMM.YYYY';
 
 const todayDate = moment().format(momentFormat);
 
@@ -27,6 +28,7 @@ const createHabit = async (req, res, next) => {
     if (repeats[0] === 'everyday') {
       dates = setDateEveryDay(startDate);
     }
+
     const habit = {
       ...body,
       owner: _id,

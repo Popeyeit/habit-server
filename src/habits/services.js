@@ -1,5 +1,7 @@
 const moment = require('moment');
-exports.momentFormat = 'dddd.DD.MMMM.YYYY';
+require('moment/locale/ru');
+moment.locale('ru');
+const momentFormat = 'dddd.DD.MMMM.YYYY';
 
 const createObj = (dateStart, index) => {
   const date = moment(dateStart, momentFormat)
@@ -42,6 +44,7 @@ exports.setDateEveryDay = dateStart => {
     const obj = createObj(dateStart, index);
     arrResult.push(obj);
   }
+
   return arrResult;
 };
 
