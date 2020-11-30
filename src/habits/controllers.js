@@ -8,9 +8,10 @@ const {
 
 const momentFormat = 'dddd.DD.MMMM.YYYY';
 
-const todayDate = moment().format(momentFormat);
-
 const createHabit = async (req, res, next) => {
+  const todayDate = moment().format(momentFormat);
+  console.log(todayDate);
+
   try {
     const { user } = req;
     const { body } = req;
@@ -44,7 +45,7 @@ const createHabit = async (req, res, next) => {
         date: result.dates[0],
         totalHabitDone: result.totalHabitDone,
       };
-      res.status(201).send(resHabit);
+      res.status(201).send([resHabit]);
       return;
     }
     res.status(201).send([]);
