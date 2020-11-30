@@ -44,10 +44,10 @@ const createHabit = async (req, res, next) => {
         date: result.dates[0],
         totalHabitDone: result.totalHabitDone,
       };
-      res.status(201).json(resHabit);
+      res.status(201).send(resHabit);
       return;
     }
-    res.status(201).json([]);
+    res.status(201).send([]);
     return;
   } catch (error) {
     next(error);
