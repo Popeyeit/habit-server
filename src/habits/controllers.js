@@ -33,9 +33,22 @@ const createHabit = async (req, res, next) => {
       ...body,
       owner: _id,
       dates,
+      totalHabitDone: 0,
     };
     const result = await HabitModule.create(habit);
-    res.status(201).json(result);
+
+    if (todayDate === result.dates[0].date) {
+      const resHabit = {
+        title: result.title,
+        _id: result._id,
+        date: result.dates[0],
+        totalHabitDone: result.totalHabitDone,
+      };
+      res.status(201).json(resHabit);
+      return;
+    }
+    res.status(201).json([]);
+    return;
   } catch (error) {
     next(error);
   }
@@ -46,14 +59,13 @@ const getHabits = async (req, res, next) => {
     const { user } = req;
     const { _id } = user;
     const { currentDate = todayDate } = req.query;
-    console.log(currentDate);
 
     const result = await HabitModule.find({ owner: _id });
 
     const filteredResult = result.reduce((newArray, el) => {
       let totalHabitDone = 0;
       const hasDate = el.dates.filter(el => {
-        el.isDone === 'true' ? (totalHabitDone += 2.5) : false;
+        // el.isDone === 'true' ? (totalHabitDone += 2.5) : false;
         return el.date === currentDate;
       });
 
@@ -62,7 +74,7 @@ const getHabits = async (req, res, next) => {
           title: el.title,
           _id: el._id,
           date: hasDate,
-          totalHabitDone,
+          totalHabitDone: el.totalHabitDone,
         });
       }
       totalHabitDone = 0;

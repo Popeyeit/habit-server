@@ -25,6 +25,10 @@ const habitSchema = new Schema({
     type: String,
     required: true,
   },
+  totalHabitDone: {
+    type: Number,
+    min: 0,
+  },
 });
 
 const HabitModule = mongoose.model('Habit', habitSchema);
