@@ -45,7 +45,8 @@ const getHabits = async (req, res, next) => {
   try {
     const { user } = req;
     const { _id } = user;
-    const { currentDate = todayDate } = req.body;
+    const { currentDate = todayDate } = req.query;
+    console.log(currentDate);
 
     const result = await HabitModule.find({ owner: _id });
 
