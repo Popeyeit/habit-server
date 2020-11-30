@@ -42,7 +42,7 @@ const createHabit = async (req, res, next) => {
       const resHabit = {
         title: result.title,
         _id: result._id,
-        date: result.dates[0],
+        date: [result.dates[0]],
         totalHabitDone: result.totalHabitDone,
       };
       res.status(201).send([resHabit]);
