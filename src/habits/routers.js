@@ -2,8 +2,13 @@ const { Router } = require('express');
 const habitsRoute = Router();
 const { authorize } = require('../user/controllers');
 const { handleValidate } = require('../helpers/validate');
-const { rulesCreateHabit, rulesToGetHabits } = require('./schemes');
-const { createHabit, getHabits } = require('./controllers');
+const {
+  rulesCreateHabit,
+  rulesToGetHabits,
+  habitIdSchema,
+  rulesChangeHabit,
+} = require('./schemes');
+const { createHabit, getHabits, changeHabit } = require('./controllers');
 
 habitsRoute.get(
   '/',
@@ -12,7 +17,13 @@ habitsRoute.get(
   getHabits,
 );
 habitsRoute.post('/', authorize, handleValidate(rulesCreateHabit), createHabit);
+habitsRoute.patch(
+  '/:habitId/:dateId',
+  authorize,
+  handleValidate(habitIdSchema, 'params'),
+  handleValidate(rulesChangeHabit),
+  changeHabit,
+);
 habitsRoute.delete('/:deleteId');
-habitsRoute.patch('/:changedId');
 
 module.exports = habitsRoute;

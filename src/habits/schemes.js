@@ -14,11 +14,20 @@ exports.rulesCreateHabit = Joi.object({
 });
 
 exports.habitIdSchema = Joi.object({
-  contactId: Joi.string().custom((value, helpers) => {
+  habitId: Joi.string().custom((value, helpers) => {
     const isValidObjId = ObjectId.isValid(value);
     if (!isValidObjId) {
-      return helpers.error('Invalid contact id. Must be object id');
+      return helpers.error('Invalid habit id. Must be object id');
+    }
+    return value;
+  }),
+  dateId: Joi.string().custom((value, helpers) => {
+    const isValidObjId = ObjectId.isValid(value);
+    if (!isValidObjId) {
+      return helpers.error('Invalid habit id. Must be object id');
     }
     return value;
   }),
 });
+
+exports.rulesChangeHabit = Joi.object({ status: Joi.string() });

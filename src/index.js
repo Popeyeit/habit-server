@@ -33,7 +33,7 @@ class CRUDServer {
       await mongoose.connect(process.env.DB_URL, {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-        useFindAndModify: true,
+        useFindAndModify: false,
       });
       console.log('Database connection successful');
     } catch (error) {

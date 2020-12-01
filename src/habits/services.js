@@ -58,3 +58,23 @@ exports.setDateTwoDays = dateStart => {
   }
   return arrResult;
 };
+
+exports.filteredArray = (arr, currentDate) => {
+  const filteredResult = arr.reduce((newArray, el) => {
+    const hasDate = el.dates.filter(el => {
+      return el.date === currentDate;
+    });
+
+    if (hasDate.length > 0) {
+      newArray.push({
+        title: el.title,
+        _id: el._id,
+        date: hasDate,
+        totalHabitDone: el.totalHabitDone,
+      });
+    }
+
+    return newArray;
+  }, []);
+  return filteredResult;
+};

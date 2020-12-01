@@ -4,14 +4,10 @@ const {
   setDateEveryDay,
   setDateThreeDays,
   setDateTwoDays,
+  filteredArray,
 } = require('./services');
 
-const momentFormat = 'dddd.DD.MMMM.YYYY';
-
 const createHabit = async (req, res, next) => {
-  const todayDate = moment().format(momentFormat);
-  console.log(todayDate);
-
   try {
     const { user } = req;
     const { body } = req;
@@ -38,6 +34,9 @@ const createHabit = async (req, res, next) => {
     };
     const result = await HabitModule.create(habit);
 
+    const momentFormat = 'dddd.DD.MMMM.YYYY';
+    const todayDate = moment().format(momentFormat);
+
     if (todayDate === result.dates[0].date) {
       const resHabit = {
         title: result.title,
@@ -63,25 +62,7 @@ const getHabits = async (req, res, next) => {
 
     const result = await HabitModule.find({ owner: _id });
 
-    const filteredResult = result.reduce((newArray, el) => {
-      let totalHabitDone = 0;
-      const hasDate = el.dates.filter(el => {
-        // el.isDone === 'true' ? (totalHabitDone += 2.5) : false;
-        return el.date === currentDate;
-      });
-
-      if (hasDate.length > 0) {
-        newArray.push({
-          title: el.title,
-          _id: el._id,
-          date: hasDate,
-          totalHabitDone: el.totalHabitDone,
-        });
-      }
-      totalHabitDone = 0;
-
-      return newArray;
-    }, []);
+    const filteredResult = filteredArray(result, currentDate);
 
     res.status(200).json(filteredResult);
   } catch (error) {
@@ -89,7 +70,65 @@ const getHabits = async (req, res, next) => {
   }
 };
 
+const changeHabit = async (req, res, next) => {
+  try {
+    const { habitId, dateId } = req.params;
+    const { status } = req.body;
+
+    const result = await HabitModule.findById({
+      _id: habitId,
+    });
+
+    const indexHabit = result.dates.findIndex(el => {
+      return el._id.toString() === dateId;
+    });
+
+    if (indexHabit === -1) {
+      res.status(404).send('not that id');
+      return;
+    }
+
+    if (result.dates[indexHabit].isDone === status) {
+      res.status(418).send('I am a teapot');
+      return;
+    }
+
+    const newArrResult = result.dates.map(el => {
+      return el._id.toString() === dateId
+        ? { _id: el._id, isDone: status, date: el.date }
+        : el;
+    });
+
+    let totalHabitDone =
+      status === 'true'
+        ? (result.totalHabitDone += 2.5)
+        : (result.totalHabitDone -= 2.5);
+
+    if (totalHabitDone < 0) {
+      totalHabitDone = 0;
+    }
+
+    if (totalHabitDone > 100) {
+      totalHabitDone = 100;
+    }
+
+    const updatedResult = await HabitModule.findOneAndUpdate(
+      { _id: habitId },
+      { totalHabitDone, dates: newArrResult },
+      { new: true },
+    );
+
+    res.status(201).send({
+      title: updatedResult.title,
+      _id: updatedResult._id,
+      date: updatedResult.dates[indexHabit],
+      totalHabitDone: updatedResult.totalHabitDone,
+    });
+  } catch (error) {}
+};
+
 module.exports = {
   createHabit,
   getHabits,
+  changeHabit,
 };
