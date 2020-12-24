@@ -71,6 +71,8 @@ const getHabits = async (req, res, next) => {
 };
 
 const changeHabit = async (req, res, next) => {
+  // when a client finished and if his result is not 100% offer him to continue doing until his result will not 100%
+
   try {
     const { habitId, dateId } = req.params;
     const { status } = req.body;
@@ -102,7 +104,7 @@ const changeHabit = async (req, res, next) => {
     let totalHabitDone =
       status === 'true'
         ? (result.totalHabitDone += 2.5)
-        : (result.totalHabitDone -= 2.5);
+        : (result.totalHabitDone -= 0);
 
     if (totalHabitDone < 0) {
       totalHabitDone = 0;
@@ -127,8 +129,82 @@ const changeHabit = async (req, res, next) => {
   } catch (error) {}
 };
 
+const deleteHabit = async (req, res, next) => {
+  try {
+    const { habitId } = req.params;
+
+    const result = await HabitModule.findByIdAndDelete({
+      _id: habitId,
+    });
+
+    res.status(200).send({ id: result._id });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const settingHabit = async (req, res, next) => {
+  try {
+    const { habitId } = req.params;
+    const { body } = req;
+
+    if (body.repeats && body.startDate) {
+      let dates = [];
+      if (repeats.length === 3) {
+        dates = setDateThreeDays(startDate, repeats);
+      }
+      if (repeats[0] === 'everyTwoDays') {
+        dates = setDateTwoDays(startDate);
+      }
+      if (repeats[0] === 'everyday') {
+        dates = setDateEveryDay(startDate);
+      }
+      const updatedResult = body.title
+        ? await HabitModule.findOneAndUpdate(
+            { _id: habitId },
+            { dates, title: body.title },
+            { new: true },
+          )
+        : await HabitModule.findOneAndUpdate(
+            { _id: habitId },
+            { dates },
+            { new: true },
+          );
+      res.status(201).send({
+        title: updatedResult.title,
+        _id: updatedResult._id,
+        date: updatedResult.dates,
+        totalHabitDone: updatedResult.totalHabitDone,
+      });
+      return;
+    }
+
+    if (body.title) {
+      const updatedResult = await HabitModule.findOneAndUpdate(
+        { _id: habitId },
+        { title: body.title },
+        { new: true },
+      );
+
+      res.status(201).send({
+        title: updatedResult.title,
+        _id: updatedResult._id,
+        date: updatedResult.dates,
+        totalHabitDone: updatedResult.totalHabitDone,
+      });
+      return;
+    }
+
+    res.status(418).send('I am a teapot');
+  } catch (error) {
+    next(error);
+  }
+};
+
 module.exports = {
   createHabit,
   getHabits,
   changeHabit,
+  deleteHabit,
+  settingHabit,
 };

@@ -7,8 +7,15 @@ const {
   rulesToGetHabits,
   habitIdSchema,
   rulesChangeHabit,
+  rulesSettingHabit,
 } = require('./schemes');
-const { createHabit, getHabits, changeHabit } = require('./controllers');
+const {
+  createHabit,
+  getHabits,
+  changeHabit,
+  deleteHabit,
+  settingHabit,
+} = require('./controllers');
 
 habitsRoute.get(
   '/',
@@ -24,6 +31,20 @@ habitsRoute.patch(
   handleValidate(rulesChangeHabit),
   changeHabit,
 );
-habitsRoute.delete('/:deleteId');
+
+habitsRoute.delete(
+  '/:habitId',
+  authorize,
+  handleValidate(habitIdSchema, 'params'),
+  deleteHabit,
+);
+
+habitsRoute.patch(
+  '/:habitId',
+  authorize,
+  handleValidate(habitIdSchema, 'params'),
+  handleValidate(rulesSettingHabit),
+  settingHabit,
+);
 
 module.exports = habitsRoute;

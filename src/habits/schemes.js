@@ -31,3 +31,9 @@ exports.habitIdSchema = Joi.object({
 });
 
 exports.rulesChangeHabit = Joi.object({ status: Joi.string() });
+
+exports.rulesSettingHabit = Joi.object({
+  title: Joi.string().max(100),
+  startDate: Joi.string(),
+  repeats: Joi.array(),
+});
