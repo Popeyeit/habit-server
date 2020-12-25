@@ -150,26 +150,32 @@ const settingHabit = async (req, res, next) => {
 
     if (body.repeats && body.startDate) {
       let dates = [];
-      if (repeats.length === 3) {
-        dates = setDateThreeDays(startDate, repeats);
+      if (body.repeats.length === 3) {
+        dates = setDateThreeDays(body.startDate, body.repeats);
       }
-      if (repeats[0] === 'everyTwoDays') {
-        dates = setDateTwoDays(startDate);
+      if (body.repeats[0] === 'everyTwoDays') {
+        dates = setDateTwoDays(body.startDate);
       }
-      if (repeats[0] === 'everyday') {
-        dates = setDateEveryDay(startDate);
+      if (body.repeats[0] === 'everyday') {
+        dates = setDateEveryDay(body.startDate);
       }
-      const updatedResult = body.title
-        ? await HabitModule.findOneAndUpdate(
-            { _id: habitId },
-            { dates, title: body.title },
-            { new: true },
-          )
-        : await HabitModule.findOneAndUpdate(
-            { _id: habitId },
-            { dates },
-            { new: true },
-          );
+
+      let updatedResult = {};
+      if (body.title) {
+        updatedResult = await HabitModule.findOneAndUpdate(
+          { _id: habitId },
+          { dates, title: body.title },
+          { new: true },
+        );
+      } else {
+        updatedResult = await HabitModule.findOneAndUpdate(
+          { _id: habitId },
+          { dates },
+          { new: true },
+        );
+      }
+      console.log('updatedResult', updatedResult);
+
       res.status(201).send({
         title: updatedResult.title,
         _id: updatedResult._id,
