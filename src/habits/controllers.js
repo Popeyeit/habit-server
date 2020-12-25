@@ -104,7 +104,7 @@ const changeHabit = async (req, res, next) => {
     let totalHabitDone =
       status === 'true'
         ? (result.totalHabitDone += 2.5)
-        : (result.totalHabitDone -= 0);
+        : (result.totalHabitDone -= 2.5);
 
     if (totalHabitDone < 0) {
       totalHabitDone = 0;
